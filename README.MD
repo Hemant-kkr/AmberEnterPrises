@@ -151,7 +151,7 @@
 ## 🏗️ Architecture & Folder Structure
 
 The project follows a **domain-driven, MVC + feature-based architecture** where each domain (auth, products, cart, orders) is self-contained with its own routes, controllers, services, and models.
-
+```
 amber-enterprises-mern/
 │
 ├── 📁 backend
@@ -328,6 +328,7 @@ amber-enterprises-mern/
 │
 ├── README.md
 └── package.json
+```
 ---
 
 ## ⚙️ Installation Guide
