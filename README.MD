@@ -152,118 +152,182 @@
 
 The project follows a **domain-driven, MVC + feature-based architecture** where each domain (auth, products, cart, orders) is self-contained with its own routes, controllers, services, and models.
 
-```
-amber-safety-enterprises/
+amber-enterprises-mern/
 │
-├── 📁 client/                          # Frontend (React + Vite)
-│   ├── 📁 public/                      # Static assets
-│   ├── 📁 src/
-│   │   ├── 📁 assets/                  # Images, icons, fonts
-│   │   ├── 📁 components/              # Reusable UI components
-│   │   │   ├── 📁 ui/                  # Base UI components (Button, Input, etc.)
-│   │   │   ├── Navbar.tsx
-│   │   │   ├── Footer.tsx
-│   │   │   ├── ProductCard.tsx
-│   │   │   ├── CartItem.tsx
-│   │   │   ├── ProtectedRoute.tsx
-│   │   │   └── ...
-│   │   ├── 📁 context/                 # React Context providers
-│   │   │   ├── AuthContext.tsx          # Authentication state
-│   │   │   └── CartContext.tsx          # Shopping cart state
-│   │   ├── 📁 hooks/                   # Custom React hooks
-│   │   │   ├── useAuth.ts
-│   │   │   ├── useCart.ts
-│   │   │   └── useProducts.ts
-│   │   ├── 📁 pages/                   # Route-level page components
-│   │   │   ├── Index.tsx               # Home page
-│   │   │   ├── Products.tsx            # Product catalog
-│   │   │   ├── ProductDetails.tsx      # Single product view
-│   │   │   ├── Cart.tsx                # Shopping cart
-│   │   │   ├── Auth.tsx                # Login / Signup
-│   │   │   ├── Profile.tsx             # User profile
-│   │   │   ├── AdminDashboard.tsx      # Admin panel
-│   │   │   ├── SellerDashboard.tsx     # Seller panel
-│   │   │   └── NotFound.tsx            # 404 page
-│   │   ├── 📁 services/                # API service layer
-│   │   │   ├── authService.ts
-│   │   │   ├── productService.ts
-│   │   │   ├── cartService.ts
-│   │   │   └── orderService.ts
-│   │   ├── 📁 utils/                   # Utility functions
-│   │   ├── App.tsx                     # Root component with routing
-│   │   ├── main.tsx                    # Entry point
-│   │   └── index.css                   # Global styles & design tokens
-│   ├── .env                            # Frontend environment variables
-│   ├── vite.config.ts
-│   ├── tailwind.config.ts
-│   └── package.json
+├── 📁 backend
 │
-├── 📁 server/                          # Backend (Express.js)
-│   ├── 📁 src/
-│   │   ├── 📁 config/                  # App configuration
-│   │   │   ├── db.js                   # MongoDB connection
-│   │   │   ├── env.js                  # Environment variable loader
-│   │   │   └── mail.js                 # Nodemailer transporter config
-│   │   │
-│   │   ├── 📁 features/                # 🔥 Domain-driven feature modules
-│   │   │   │
-│   │   │   ├── 📁 auth/                # Authentication domain
-│   │   │   │   ├── auth.routes.js      # POST /signup, /login, /verify
-│   │   │   │   ├── auth.controller.js  # Request handling logic
-│   │   │   │   ├── auth.service.js     # Business logic (hash, token, email)
-│   │   │   │   ├── auth.validation.js  # Input validation schemas
-│   │   │   │   └── auth.model.js       # → references User model
-│   │   │   │
-│   │   │   ├── 📁 users/               # User management domain
-│   │   │   │   ├── user.routes.js
-│   │   │   │   ├── user.controller.js
-│   │   │   │   ├── user.service.js
-│   │   │   │   └── user.model.js       # User Mongoose schema
-│   │   │   │
-│   │   │   ├── 📁 products/            # Product catalog domain
-│   │   │   │   ├── product.routes.js
-│   │   │   │   ├── product.controller.js
-│   │   │   │   ├── product.service.js
-│   │   │   │   ├── product.validation.js
-│   │   │   │   └── product.model.js    # Product Mongoose schema
-│   │   │   │
-│   │   │   ├── 📁 cart/                # Shopping cart domain
-│   │   │   │   ├── cart.routes.js
-│   │   │   │   ├── cart.controller.js
-│   │   │   │   ├── cart.service.js
-│   │   │   │   └── cart.model.js       # Cart Mongoose schema
-│   │   │   │
-│   │   │   └── 📁 orders/              # Order management domain
-│   │   │       ├── order.routes.js
-│   │   │       ├── order.controller.js
-│   │   │       ├── order.service.js
-│   │   │       └── order.model.js      # Order Mongoose schema
-│   │   │
-│   │   ├── 📁 middlewares/             # Express middlewares
-│   │   │   ├── auth.middleware.js      # JWT verification & route protection
-│   │   │   ├── role.middleware.js      # Role-based access control
-│   │   │   ├── error.middleware.js     # Global error handler
-│   │   │   ├── logger.middleware.js    # Request logging
-│   │   │   └── upload.middleware.js    # Multer file upload config
-│   │   │
-│   │   ├── 📁 utils/                   # Shared utilities
-│   │   │   ├── generateToken.js        # JWT token generation
-│   │   │   ├── sendEmail.js            # Email sending utility
-│   │   │   ├── apiResponse.js          # Standardized API responses
-│   │   │   └── asyncHandler.js         # Async error wrapper
-│   │   │
-│   │   ├── app.js                      # Express app setup
-│   │   └── server.js                   # Server entry point
+│   ├── 📁 app
+│   │   └── app.js                    # Express app initialization
 │   │
-│   ├── 📁 uploads/                     # Uploaded product images
-│   ├── .env                            # Backend environment variables
-│   └── package.json
+│   ├── 📁 config
+│   │   └── db.js                     # MongoDB connection
+│   │
+│   ├── 📁 constants
+│   │   ├── categories-constant.js
+│   │   └── roles-constant.js
+│   │
+│   ├── 📁 features                  # 🔥 Domain modules
+│   │
+│   │   ├── 📁 auth
+│   │   │   ├── 📁 controllers
+│   │   │   │   ├── login-controller.js
+│   │   │   │   ├── signup-controllers.js
+│   │   │   │   ├── verifyEmail-controller.js
+│   │   │   │   ├── resendVerification-controller.js
+│   │   │   │   ├── signout-controller.js
+│   │   │   │   └── me-controller.js
+│   │   │   │
+│   │   │   ├── 📁 models
+│   │   │   │   └── user-model.js
+│   │   │   │
+│   │   │   ├── 📁 routes
+│   │   │   │   └── auth-routes.js
+│   │   │   │
+│   │   │   └── 📁 services
+│   │   │       ├── existence.js
+│   │   │       └── findAndUpdate.js
+│   │
+│   │   ├── 📁 products
+│   │   │   ├── 📁 controllers
+│   │   │   │   ├── add-controller.js
+│   │   │   │   └── Products-controller.js
+│   │   │   │
+│   │   │   ├── 📁 models
+│   │   │   │   └── product-model.js
+│   │   │   │
+│   │   │   ├── 📁 routes
+│   │   │   │   └── product-routes.js
+│   │   │   │
+│   │   │   └── 📁 services
+│   │
+│   │   ├── 📁 cart
+│   │   │   ├── controllers
+│   │   │   ├── models
+│   │   │   ├── routes
+│   │   │   └── services
+│   │
+│   │   ├── 📁 orders
+│   │   │   ├── controllers
+│   │   │   ├── models
+│   │   │   ├── routes
+│   │   │   └── services
+│   │
+│   │   └── 📁 users
+│   │       ├── controllers
+│   │       ├── models
+│   │       ├── routes
+│   │       └── services
 │
-├── .gitignore
+│   ├── 📁 middlewares
+│   │   ├── checkDuplicate-middleware.js
+│   │   ├── errorHandling-middleware.js
+│   │   ├── morgan-middleware.js
+│   │   ├── multer-middleware.js
+│   │   ├── requireLogin-middleware.js
+│   │   └── requireSeller-middleware.js
+│
+│   ├── 📁 routes
+│   │   └── index-routes.js
+│
+│   ├── 📁 utils
+│   │   ├── appError.js
+│   │   ├── authToken.js
+│   │   ├── catchAsync.js
+│   │   ├── logger.js
+│   │   ├── mailSender.js
+│   │   ├── tokens.js
+│   │   └── transporter.js
+│
+│
+├── 📁 frontend
+│
+│   ├── App.jsx
+│   ├── main.jsx
+│   ├── index.css
+│
+│   ├── 📁 api
+│   │   └── mainApi.js                # Axios configuration
+│
+│   ├── 📁 assets
+│   │   ├── icons
+│   │   └── images
+│
+│   ├── 📁 components                 # Shared UI components
+│   │   ├── 📁 header
+│   │   ├── 📁 footer
+│   │   ├── 📁 Home
+│   │   └── 📁 profile
+│
+│   ├── 📁 constants
+│   │   ├── categories-constant.js
+│   │   └── roles-constant.js
+│
+│   ├── 📁 features                   # 🔥 Feature based frontend
+│   │
+│   │   ├── 📁 auth
+│   │   │   ├── components
+│   │   │   │   ├── LoginForm.jsx
+│   │   │   │   └── SignUpForm.jsx
+│   │   │   └── pages
+│   │   │       └── Auth.jsx
+│   │
+│   │   ├── 📁 products
+│   │   │   ├── components
+│   │   │   │   ├── ProductCard.jsx
+│   │   │   │   └── SingleProduct.jsx
+│   │
+│   │   ├── 📁 cart
+│   │   │   ├── components
+│   │   │   │   ├── CartItem.jsx
+│   │   │   │   ├── CheckOut.jsx
+│   │   │   │   └── EmptyCart.jsx
+│   │   │   └── pages
+│   │   │       └── Cart.jsx
+│   │
+│   │   ├── 📁 orders
+│   │   │   ├── components
+│   │   │   └── pages
+│   │
+│   │   └── 📁 seller
+│   │       ├── components
+│   │       │   ├── ProductForm.jsx
+│   │       │   └── SellerAnalytics.jsx
+│   │       └── pages
+│   │           └── Seller.jsx
+│
+│   ├── 📁 hooks
+│   │   ├── useApi.js
+│   │   ├── useAuth.js
+│   │   ├── useCart.js
+│   │   └── useProduct.js
+│
+│   ├── 📁 store                      # Global state
+│   │   ├── AuthContext.jsx
+│   │   └── ProductContext.jsx
+│
+│   ├── 📁 layout
+│   │   ├── AuthLayout.jsx
+│   │   └── MainLayout.jsx
+│
+│   ├── 📁 router
+│   │   └── pageRoutes.jsx
+│
+│   ├── 📁 services                   # API calls
+│   │   ├── authServices.js
+│   │   ├── cartServices.js
+│   │   └── productServices.js
+│
+│   ├── 📁 ui                         # Reusable UI components
+│   │   ├── button.jsx
+│   │   ├── card.jsx
+│   │   ├── input.jsx
+│   │   ├── slider.jsx
+│   │   └── skeleton.jsx
+│
+│   └── 📁 utils
+│
 ├── README.md
-└── LICENSE
-```
-
+└── package.json
 ---
 
 ## ⚙️ Installation Guide
@@ -463,10 +527,9 @@ Please make sure to update tests as appropriate and follow the existing code sty
 
 **Your Name**
 
-- GitHub: [@your-username](https://github.com/your-username)
-- LinkedIn: [Your Name](https://linkedin.com/in/your-profile)
-- Email: your-email@gmail.com
-
+- GitHub: [@Hemant-kkr](https://github.com/Hemant-kkr/)
+- LinkedIn: [Hemant Kumar](www.linkedin.com/in/hemant-166240269)
+- Email: hemant.sindhyan.dev@gmail.com
 ---
 
 ## 📄 License
@@ -476,7 +539,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 ---
 
 <p align="center">
-  Made with ❤️ and ☕ by <strong>Your Name</strong>
+  Made with ❤️ and ☕ by <strong>Hemant Kumar</strong>
 </p>
 
 <p align="center">
