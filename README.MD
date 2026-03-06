@@ -1,15 +1,484 @@
-user ability 
-usability enjoyability 
-acessibilty 
-theming clean ui 
+<p align="center">
+  <img src="https://img.shields.io/badge/MERN-Stack-green?style=for-the-badge" alt="MERN Stack" />
+  <img src="https://img.shields.io/badge/Architecture-MVC%20%2B%20Feature--Based-blue?style=for-the-badge" alt="Architecture" />
+  <img src="https://img.shields.io/badge/Auth-JWT-orange?style=for-the-badge" alt="JWT Auth" />
+  <img src="https://img.shields.io/badge/Database-MongoDB-darkgreen?style=for-the-badge" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License" />
+</p>
 
-shadcn 
-antdesign 
-meterial ui
-chakra ui 
-dazy ui 
-asernity 
-lovable ui 
+# 🛡️ Amber Safety Enterprises — Full-Stack E-Commerce Platform
 
+> A production-ready, full-stack **MERN** e-commerce application for industrial safety products — built with **domain-driven architecture**, **JWT authentication with email verification**, and **role-based access control**.
 
-winston
+---
+
+## 📋 Table of Contents
+
+- [Project Overview](#-project-overview)
+- [Tech Stack](#-tech-stack)
+- [Features](#-features)
+- [Authentication Flow](#-authentication-flow)
+- [Architecture & Folder Structure](#-architecture--folder-structure)
+- [Installation Guide](#-installation-guide)
+- [Environment Variables](#-environment-variables)
+- [API Endpoints Overview](#-api-endpoints-overview)
+- [Screenshots](#-screenshots)
+- [Future Improvements](#-future-improvements)
+- [Contributing](#-contributing)
+- [Author](#-author)
+
+---
+
+## 🚀 Project Overview
+
+**Amber Safety Enterprises** is a comprehensive e-commerce platform specializing in industrial safety equipment. The application follows a **domain-driven, MVC + feature-based architecture** ensuring clean separation of concerns, scalability, and maintainability.
+
+### Key Highlights
+
+- 🔐 **Secure JWT Authentication** with Gmail-based email verification links
+- 👥 **Role-Based Access Control** — User, Seller, Admin
+- 🏗️ **Domain-Driven Architecture** — Modular, scalable, and maintainable
+- 🛒 **Full E-Commerce Flow** — Browse → Cart → Checkout
+- 📦 **Product Management** — CRUD with image uploads
+- 📧 **Transactional Emails** — Verification & notifications via Nodemailer
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer        | Technology                                                    |
+| ------------ | ------------------------------------------------------------- |
+| **Frontend** | React.js, Vite, Context API, React Router, Tailwind CSS       |
+| **Backend**  | Node.js, Express.js, REST API                                 |
+| **Database** | MongoDB, Mongoose ODM                                         |
+| **Auth**     | JWT (JSON Web Tokens), Bcrypt.js                              |
+| **Email**    | Nodemailer (Gmail SMTP)                                       |
+| **Upload**   | Multer (multipart/form-data)                                  |
+| **DevOps**   | ESLint, Prettier, dotenv, Nodemon                             |
+
+---
+
+## ✨ Features
+
+### 👤 User Features
+
+| Feature                    | Description                                              |
+| -------------------------- | -------------------------------------------------------- |
+| 📝 Registration            | Sign up with full name, email & password                 |
+| ✉️ Email Verification      | JWT-based verification link sent to Gmail                |
+| 🔑 Login / Logout          | Secure session with httpOnly JWT cookies or bearer token |
+| 🛍️ Browse Products          | View all products organized by category                  |
+| 🔍 Product Details          | Detailed product view with images & specifications       |
+| 🛒 Cart Management          | Add, update quantity, remove items from cart              |
+| 💳 Checkout                 | Complete purchase with shipping details                  |
+| 👤 Profile Management       | View and update personal information                     |
+
+### 🏪 Seller / Admin Features
+
+| Feature                    | Description                                              |
+| -------------------------- | -------------------------------------------------------- |
+| ➕ Add Products             | Create new products with image upload (Multer)           |
+| ✏️ Update Products          | Edit product details, pricing, and inventory             |
+| 🗑️ Delete Products          | Remove products from the catalog                         |
+| 📊 Inventory Management     | Track and manage product stock quantities                |
+| 👥 User Management          | Admin oversight of registered users and roles            |
+| 📦 Order Management         | View and update order statuses                           |
+
+---
+
+## 🔐 Authentication Flow
+
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────────┐
+│   User       │     │   Server      │     │   Gmail (SMTP)   │
+│   (Client)   │     │   (Express)   │     │                  │
+└──────┬───────┘     └──────┬───────┘     └────────┬─────────┘
+       │                     │                      │
+       │  1. POST /signup    │                      │
+       │  (name,email,pass)  │                      │
+       │────────────────────►│                      │
+       │                     │                      │
+       │                     │  2. Hash password    │
+       │                     │  3. Save user        │
+       │                     │     (verified:false) │
+       │                     │                      │
+       │                     │  4. Generate JWT     │
+       │                     │     verification     │
+       │                     │     token            │
+       │                     │                      │
+       │                     │  5. Send email with  │
+       │                     │     verification     │
+       │                     │────────────────────► │
+       │                     │     link             │
+       │                     │                      │
+       │  6. Response:       │                      │
+       │  "Check your email" │                      │
+       │◄────────────────────│                      │
+       │                     │                      │
+       │  7. User clicks     │                      │
+       │     verification    │                      │
+       │     link in email   │                      │
+       │────────────────────►│                      │
+       │                     │                      │
+       │                     │  8. Verify JWT token │
+       │                     │  9. Set verified:true│
+       │                     │                      │
+       │  10. "Email         │                      │
+       │      verified!"     │                      │
+       │◄────────────────────│                      │
+       │                     │                      │
+       │  11. POST /login    │                      │
+       │  (email, password)  │                      │
+       │────────────────────►│                      │
+       │                     │                      │
+       │                     │  12. Validate creds  │
+       │                     │  13. Check verified  │
+       │                     │  14. Generate JWT    │
+       │                     │      access token    │
+       │                     │                      │
+       │  15. JWT Token +    │                      │
+       │      User Data      │                      │
+       │◄────────────────────│                      │
+       │                     │                      │
+       │  16. Authenticated  │                      │
+       │      requests with  │                      │
+       │      Bearer token   │                      │
+       │────────────────────►│                      │
+```
+
+---
+
+## 🏗️ Architecture & Folder Structure
+
+The project follows a **domain-driven, MVC + feature-based architecture** where each domain (auth, products, cart, orders) is self-contained with its own routes, controllers, services, and models.
+
+```
+amber-safety-enterprises/
+│
+├── 📁 client/                          # Frontend (React + Vite)
+│   ├── 📁 public/                      # Static assets
+│   ├── 📁 src/
+│   │   ├── 📁 assets/                  # Images, icons, fonts
+│   │   ├── 📁 components/              # Reusable UI components
+│   │   │   ├── 📁 ui/                  # Base UI components (Button, Input, etc.)
+│   │   │   ├── Navbar.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   ├── ProductCard.tsx
+│   │   │   ├── CartItem.tsx
+│   │   │   ├── ProtectedRoute.tsx
+│   │   │   └── ...
+│   │   ├── 📁 context/                 # React Context providers
+│   │   │   ├── AuthContext.tsx          # Authentication state
+│   │   │   └── CartContext.tsx          # Shopping cart state
+│   │   ├── 📁 hooks/                   # Custom React hooks
+│   │   │   ├── useAuth.ts
+│   │   │   ├── useCart.ts
+│   │   │   └── useProducts.ts
+│   │   ├── 📁 pages/                   # Route-level page components
+│   │   │   ├── Index.tsx               # Home page
+│   │   │   ├── Products.tsx            # Product catalog
+│   │   │   ├── ProductDetails.tsx      # Single product view
+│   │   │   ├── Cart.tsx                # Shopping cart
+│   │   │   ├── Auth.tsx                # Login / Signup
+│   │   │   ├── Profile.tsx             # User profile
+│   │   │   ├── AdminDashboard.tsx      # Admin panel
+│   │   │   ├── SellerDashboard.tsx     # Seller panel
+│   │   │   └── NotFound.tsx            # 404 page
+│   │   ├── 📁 services/                # API service layer
+│   │   │   ├── authService.ts
+│   │   │   ├── productService.ts
+│   │   │   ├── cartService.ts
+│   │   │   └── orderService.ts
+│   │   ├── 📁 utils/                   # Utility functions
+│   │   ├── App.tsx                     # Root component with routing
+│   │   ├── main.tsx                    # Entry point
+│   │   └── index.css                   # Global styles & design tokens
+│   ├── .env                            # Frontend environment variables
+│   ├── vite.config.ts
+│   ├── tailwind.config.ts
+│   └── package.json
+│
+├── 📁 server/                          # Backend (Express.js)
+│   ├── 📁 src/
+│   │   ├── 📁 config/                  # App configuration
+│   │   │   ├── db.js                   # MongoDB connection
+│   │   │   ├── env.js                  # Environment variable loader
+│   │   │   └── mail.js                 # Nodemailer transporter config
+│   │   │
+│   │   ├── 📁 features/                # 🔥 Domain-driven feature modules
+│   │   │   │
+│   │   │   ├── 📁 auth/                # Authentication domain
+│   │   │   │   ├── auth.routes.js      # POST /signup, /login, /verify
+│   │   │   │   ├── auth.controller.js  # Request handling logic
+│   │   │   │   ├── auth.service.js     # Business logic (hash, token, email)
+│   │   │   │   ├── auth.validation.js  # Input validation schemas
+│   │   │   │   └── auth.model.js       # → references User model
+│   │   │   │
+│   │   │   ├── 📁 users/               # User management domain
+│   │   │   │   ├── user.routes.js
+│   │   │   │   ├── user.controller.js
+│   │   │   │   ├── user.service.js
+│   │   │   │   └── user.model.js       # User Mongoose schema
+│   │   │   │
+│   │   │   ├── 📁 products/            # Product catalog domain
+│   │   │   │   ├── product.routes.js
+│   │   │   │   ├── product.controller.js
+│   │   │   │   ├── product.service.js
+│   │   │   │   ├── product.validation.js
+│   │   │   │   └── product.model.js    # Product Mongoose schema
+│   │   │   │
+│   │   │   ├── 📁 cart/                # Shopping cart domain
+│   │   │   │   ├── cart.routes.js
+│   │   │   │   ├── cart.controller.js
+│   │   │   │   ├── cart.service.js
+│   │   │   │   └── cart.model.js       # Cart Mongoose schema
+│   │   │   │
+│   │   │   └── 📁 orders/              # Order management domain
+│   │   │       ├── order.routes.js
+│   │   │       ├── order.controller.js
+│   │   │       ├── order.service.js
+│   │   │       └── order.model.js      # Order Mongoose schema
+│   │   │
+│   │   ├── 📁 middlewares/             # Express middlewares
+│   │   │   ├── auth.middleware.js      # JWT verification & route protection
+│   │   │   ├── role.middleware.js      # Role-based access control
+│   │   │   ├── error.middleware.js     # Global error handler
+│   │   │   ├── logger.middleware.js    # Request logging
+│   │   │   └── upload.middleware.js    # Multer file upload config
+│   │   │
+│   │   ├── 📁 utils/                   # Shared utilities
+│   │   │   ├── generateToken.js        # JWT token generation
+│   │   │   ├── sendEmail.js            # Email sending utility
+│   │   │   ├── apiResponse.js          # Standardized API responses
+│   │   │   └── asyncHandler.js         # Async error wrapper
+│   │   │
+│   │   ├── app.js                      # Express app setup
+│   │   └── server.js                   # Server entry point
+│   │
+│   ├── 📁 uploads/                     # Uploaded product images
+│   ├── .env                            # Backend environment variables
+│   └── package.json
+│
+├── .gitignore
+├── README.md
+└── LICENSE
+```
+
+---
+
+## ⚙️ Installation Guide
+
+### Prerequisites
+
+Make sure you have the following installed:
+
+- **Node.js** (v18 or higher) — [Download](https://nodejs.org/)
+- **MongoDB** (local or [MongoDB Atlas](https://www.mongodb.com/atlas))
+- **Git** — [Download](https://git-scm.com/)
+- **Gmail Account** — for email verification (with App Password enabled)
+
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/your-username/amber-safety-enterprises.git
+cd amber-safety-enterprises
+```
+
+### 2️⃣ Setup Backend
+
+```bash
+# Navigate to server directory
+cd server
+
+# Install dependencies
+npm install
+
+# Create environment file
+cp .env.example .env
+
+# Configure your .env file (see Environment Variables section)
+
+# Start development server
+npm run dev
+```
+
+### 3️⃣ Setup Frontend
+
+```bash
+# Navigate to client directory (from project root)
+cd client
+
+# Install dependencies
+npm install
+
+# Create environment file
+cp .env.example .env
+
+# Start development server
+npm run dev
+```
+
+### 4️⃣ Access the Application
+
+| Service    | URL                          |
+| ---------- | ---------------------------- |
+| Frontend   | `http://localhost:5173`       |
+| Backend    | `http://localhost:5000`       |
+| API Base   | `http://localhost:5000/api`   |
+
+---
+
+## 🔑 Environment Variables
+
+### Backend (`server/.env`)
+
+```env
+# Server
+PORT=5000
+NODE_ENV=development
+
+# Database
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/amber-safety
+
+# JWT
+JWT_SECRET=your_super_secret_jwt_key_here
+JWT_EXPIRE=7d
+JWT_VERIFY_EXPIRE=24h
+
+# Email (Gmail SMTP)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-gmail-app-password
+
+# Client URL (for verification links)
+CLIENT_URL=http://localhost:5173
+```
+
+### Frontend (`client/.env`)
+
+```env
+VITE_API_URL=http://localhost:5000/api
+```
+
+> ⚠️ **Important:** Never commit `.env` files to version control. They are included in `.gitignore`.
+
+---
+
+## 📡 API Endpoints Overview
+
+### 🔐 Authentication — `/api/auth`
+
+| Method | Endpoint              | Description                  | Auth Required |
+| ------ | --------------------- | ---------------------------- | ------------- |
+| POST   | `/api/auth/signup`    | Register a new user          | ❌             |
+| POST   | `/api/auth/login`     | Login & receive JWT token    | ❌             |
+| GET    | `/api/auth/verify/:token` | Verify email via JWT link | ❌             |
+| POST   | `/api/auth/logout`    | Logout & clear session       | ✅             |
+| GET    | `/api/auth/me`        | Get current user profile     | ✅             |
+
+### 📦 Products — `/api/products`
+
+| Method | Endpoint               | Description                  | Auth Required  |
+| ------ | ---------------------- | ---------------------------- | -------------- |
+| GET    | `/api/products`        | Get all products             | ❌              |
+| GET    | `/api/products/:id`    | Get single product           | ❌              |
+| POST   | `/api/products`        | Create new product           | ✅ Seller/Admin |
+| PUT    | `/api/products/:id`    | Update product               | ✅ Seller/Admin |
+| DELETE | `/api/products/:id`    | Delete product               | ✅ Seller/Admin |
+
+### 🛒 Cart — `/api/cart`
+
+| Method | Endpoint               | Description                  | Auth Required |
+| ------ | ---------------------- | ---------------------------- | ------------- |
+| GET    | `/api/cart`            | Get user's cart               | ✅             |
+| POST   | `/api/cart`            | Add item to cart              | ✅             |
+| PUT    | `/api/cart/:itemId`    | Update item quantity          | ✅             |
+| DELETE | `/api/cart/:itemId`    | Remove item from cart         | ✅             |
+| DELETE | `/api/cart`            | Clear entire cart             | ✅             |
+
+### 📋 Orders — `/api/orders`
+
+| Method | Endpoint               | Description                  | Auth Required  |
+| ------ | ---------------------- | ---------------------------- | -------------- |
+| POST   | `/api/orders`          | Place a new order             | ✅              |
+| GET    | `/api/orders`          | Get user's orders             | ✅              |
+| GET    | `/api/orders/:id`      | Get order details             | ✅              |
+| PUT    | `/api/orders/:id`      | Update order status           | ✅ Seller/Admin |
+
+---
+
+## 📸 Screenshots
+
+<p align="center">
+  <em>🏠 Home Page</em><br/>
+  <img src="docs/screenshots/home.png" alt="Home Page" width="800" />
+</p>
+
+<p align="center">
+  <em>🛍️ Products Page</em><br/>
+  <img src="docs/screenshots/products.png" alt="Products Page" width="800" />
+</p>
+
+<p align="center">
+  <em>🛒 Shopping Cart</em><br/>
+  <img src="docs/screenshots/cart.png" alt="Cart Page" width="800" />
+</p>
+
+> 💡 *Add your own screenshots to `docs/screenshots/` directory*
+
+---
+
+## 🔮 Future Improvements
+
+- [ ] 🔍 **Full-text search** with Elasticsearch or MongoDB Atlas Search
+- [ ] 💳 **Payment gateway integration** (Razorpay / Stripe)
+- [ ] 📱 **Progressive Web App (PWA)** support
+- [ ] 📊 **Analytics dashboard** for sellers with sales charts
+- [ ] 🌐 **Multi-language support** (i18n)
+- [ ] ⭐ **Product reviews & ratings** system
+- [ ] 📬 **Order tracking** with real-time status updates
+- [ ] 🔔 **Push notifications** for order updates
+- [ ] 🧪 **Unit & integration tests** with Jest & React Testing Library
+- [ ] 🐳 **Docker containerization** for easy deployment
+- [ ] 🚀 **CI/CD pipeline** with GitHub Actions
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how you can help:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+Please make sure to update tests as appropriate and follow the existing code style.
+
+---
+
+## 👨‍💻 Author
+
+**Your Name**
+
+- GitHub: [@your-username](https://github.com/your-username)
+- LinkedIn: [Your Name](https://linkedin.com/in/your-profile)
+- Email: your-email@gmail.com
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+<p align="center">
+  Made with ❤️ and ☕ by <strong>Your Name</strong>
+</p>
+
+<p align="center">
+  ⭐ Star this repo if you found it helpful!
+</p>
